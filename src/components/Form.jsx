@@ -1,17 +1,28 @@
 import { useState, useEffect } from "react";
 import Error from "./Error";
 
-const Form = ({ pacientes, setPacientes }) => {
+const Form = ({ pacientes, setPacientes, paciente }) => {
 
     const [nombre, setNombre] = useState('')
     const [propietario, setPropietario] = useState('')
     const [email, setEmail] = useState('')
-    const [date, setDate] = useState('')
+    const [fecha, setFecha] = useState('')
     const [sintomas, setSintomas] = useState('')
 
     const [error, setError] = useState(false);
 
-
+    useEffect(() => {
+        console.log('object key', Object.keys(paciente))
+        if (Object.keys(paciente).length > 0) {
+            setNombre(paciente.nombre)
+            setPropietario(paciente.propietario)
+            setEmail(paciente.email)
+            setFecha(paciente.fecha)
+            setSintomas(paciente.sintomas)
+        } else {
+            console.log('Nada')
+        }
+    }, [paciente])
 
     const generarId = () => {
         const random = Math.random().toString(36).substring(2);
@@ -22,7 +33,7 @@ const Form = ({ pacientes, setPacientes }) => {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        if ([nombre, propietario, email, date, sintomas].includes('')) {
+        if ([nombre, propietario, email, fecha, sintomas].includes('')) {
             setError(true)
             return;
         }
@@ -33,14 +44,23 @@ const Form = ({ pacientes, setPacientes }) => {
             nombre,
             propietario,
             email,
-            date,
-            sintomas
+            fecha,
+            sintomas,
+            id: generarId()
         }
 
         setPacientes([
             ...pacientes,
             objetoPaciente
         ])
+
+        //Reiniciar form
+        setNombre('')
+        setPropietario('')
+        setPacientes('')
+        setEmail('')
+        setFecha('')
+        setSintomas('')
     }
 
     return (
@@ -105,8 +125,8 @@ const Form = ({ pacientes, setPacientes }) => {
                         type="date"
                         placeholder='Email Contacto Propietario'
                         className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                        value={date}
-                        onChange={(e) => setDate(e.target.value) }
+                        value={fecha}
+                        onChange={(e) => setFecha(e.target.value) }
                     />
                 </div>
                 <div className='mb-5'>
